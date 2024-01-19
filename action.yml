@@ -6,7 +6,6 @@ inputs:
 
 runs:
   using: "composite"
-  name: "Whitespace validation"
   steps:
     - name: "Whitespace validation"
       run: python3 ${{ github.action_path }}/whitespace.py ${{ inputs.whitespace_patterns }}
