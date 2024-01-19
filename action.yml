@@ -1,0 +1,10 @@
+name: "ZeroC Github Actions"
+inputs:
+  whitespace_patterns:
+    description: "A list wildcard patterns of files to check for whitespace violations."
+    required: true
+runs:
+  using: "composite"
+  steps: Whitespace linting
+    - run: python3 ${{ github.action_path }}/whitespace.py ${{ inputs.whitespace_patterns }}
+      shell: bash
