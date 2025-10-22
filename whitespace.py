@@ -10,6 +10,7 @@ trailingWhitespaceSkipPatterns = [
     "(coeur.utf8)$",
     "(GRADLE_LICENSE)$",
     "(Resource.designer.cs)$",
+    "(gradlew|gradlew.bat)$",
 ]
 multipleEmptyLinesSkipPatterns = [
     r"(Grammar|Scanner)\.(h|cpp|m)",
@@ -17,6 +18,7 @@ multipleEmptyLinesSkipPatterns = [
     "(GRADLE_LICENSE)$",
     "src/ice/msi/docs/main/THIRD_PARTY_LICENSE.txt",
     "(Resource.designer.cs)$",
+    "(gradlew|gradlew.bat)$",
 ]
 
 
