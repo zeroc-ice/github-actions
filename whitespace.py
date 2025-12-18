@@ -63,7 +63,7 @@ def empty_line_max(filename):
 def check_new_line_eof(filename, last_line):
     """Returns true if the last line of the file ends with a newline."""
     skip_patterns = [
-        "(.sln|.csproj|.vcxproj|.vcxproj.filters|vcxproj.user|.uwp.appxmanifest|.resx|packages.config)$",
+        "(.sln|.csproj|.vcxproj|.vcxproj.filters|vcxproj.user|.uwp.appxmanifest|.resx|packages.config|packages.lock.json)$",
         "/Images.xcassets/",
     ]
 
