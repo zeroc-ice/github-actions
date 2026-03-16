@@ -1,4 +1,6 @@
 name: "ZeroC Github Actions"
+description: "A collection of Github Actions for ZeroC projects."
+
 inputs:
   whitespace_patterns:
     description: "A list wildcard patterns of files to check for whitespace violations."
