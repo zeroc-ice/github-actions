@@ -23,8 +23,8 @@ multipleEmptyLinesSkipPatterns = [
     r"\.svg$",
 ]
 
-# Matches the opening or closing delimiter of a Markdown fenced code block: three or more
-# backticks or tildes, optionally indented.
+# Matches a Markdown fenced code block delimiter: three or more backticks or tildes,
+# optionally indented. Group 1 captures the run of fence characters.
 MARKDOWN_CODE_FENCE = re.compile(r"^\s*(`{3,}|~{3,})")
 
 
@@ -80,6 +80,20 @@ def check_new_line_eof(filename, last_line):
     return re.search("\r?\n", last_line)
 
 
+def is_closing_code_fence(line, marker):
+    """Returns true if `line` closes a fenced code block opened with `marker`.
+
+    Per CommonMark, a closing fence uses the same marker character, is at least as long as
+    the opening fence, and contains nothing but fence characters.
+    """
+    stripped = line.strip()
+    return (
+        len(stripped) >= len(marker)
+        and stripped[0] == marker[0]
+        and stripped == stripped[0] * len(stripped)
+    )
+
+
 def check_whitespace(filename):
     """Returns true if the file does not contain trailing whitespace or multiple empty lines."""
     failed = False
@@ -99,13 +113,13 @@ def check_whitespace(filename):
             lines = file.readlines()
 
             empty_lines = []
-            in_code_fence = False
+            fence_marker = None
             is_markdown = filename.endswith((".md", ".markdown"))
             for line_number, line in enumerate(lines):
                 # The consecutive-empty-lines rule is suspended inside Markdown fenced code
                 # blocks. The embedded code is owned by a code formatter (e.g. ruff), which
                 # may legitimately insert two blank lines around top-level definitions.
-                if not skip_multiple_empty_lines and empty_line_max(filename) > 0 and not in_code_fence:
+                if not skip_multiple_empty_lines and empty_line_max(filename) > 0 and fence_marker is None:
                     if len(line.strip()) == 0:
                         empty_lines.append(line_number)
                     else:  # Non-empty line (maybe first after multiple empty lines)
@@ -116,9 +130,15 @@ def check_whitespace(filename):
                             failed = True
                         empty_lines = []
 
-                if is_markdown and MARKDOWN_CODE_FENCE.match(line):
-                    in_code_fence = not in_code_fence
-                    empty_lines = []
+                if is_markdown:
+                    if fence_marker is None:
+                        match = MARKDOWN_CODE_FENCE.match(line)
+                        if match:
+                            fence_marker = match.group(1)
+                            empty_lines = []
+                    elif is_closing_code_fence(line, fence_marker):
+                        fence_marker = None
+                        empty_lines = []
 
                 if not skip_trailing_white_space and re.search("[ \t]+$", line):
                     print(f"error: {filename} contains trailing whitespace")
