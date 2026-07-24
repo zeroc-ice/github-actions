@@ -23,6 +23,10 @@ multipleEmptyLinesSkipPatterns = [
     r"\.svg$",
 ]
 
+# Matches the opening or closing delimiter of a Markdown fenced code block: three or more
+# backticks or tildes, optionally indented.
+MARKDOWN_CODE_FENCE = re.compile(r"^\s*(`{3,}|~{3,})")
+
 
 def get_tracked_files(exclude_binary=True):
     """Finds all tracked files in the current git repository."""
@@ -95,8 +99,13 @@ def check_whitespace(filename):
             lines = file.readlines()
 
             empty_lines = []
+            in_code_fence = False
+            is_markdown = filename.endswith((".md", ".markdown"))
             for line_number, line in enumerate(lines):
-                if not skip_multiple_empty_lines and empty_line_max(filename) > 0:
+                # The consecutive-empty-lines rule is suspended inside Markdown fenced code
+                # blocks. The embedded code is owned by a code formatter (e.g. ruff), which
+                # may legitimately insert two blank lines around top-level definitions.
+                if not skip_multiple_empty_lines and empty_line_max(filename) > 0 and not in_code_fence:
                     if len(line.strip()) == 0:
                         empty_lines.append(line_number)
                     else:  # Non-empty line (maybe first after multiple empty lines)
@@ -106,6 +115,10 @@ def check_whitespace(filename):
                             )
                             failed = True
                         empty_lines = []
+
+                if is_markdown and MARKDOWN_CODE_FENCE.match(line):
+                    in_code_fence = not in_code_fence
+                    empty_lines = []
 
                 if not skip_trailing_white_space and re.search("[ \t]+$", line):
                     print(f"error: {filename} contains trailing whitespace")
