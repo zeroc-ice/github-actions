@@ -26,6 +26,7 @@ multipleEmptyLinesSkipPatterns = [
 # Matches a Markdown fenced code block delimiter: three or more backticks or tildes,
 # optionally indented. Group 1 captures the run of fence characters.
 MARKDOWN_CODE_FENCE = re.compile(r"^\s*(`{3,}|~{3,})")
+WHITESPACE_EXCLUDE_PATTERNS = [r"\.patch$"]
 
 
 def get_tracked_files(exclude_binary=True):
@@ -48,6 +49,8 @@ def find(pattern, exclude_binary=True):
     result = []
     for fullpath in get_tracked_files(exclude_binary):
         if os.path.isdir(fullpath):
+            continue
+        if any(re.search(p, fullpath) for p in WHITESPACE_EXCLUDE_PATTERNS):
             continue
         basename = os.path.basename(fullpath)
         for p in pattern:
