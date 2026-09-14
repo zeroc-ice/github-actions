@@ -11,6 +11,7 @@ trailingWhitespaceSkipPatterns = [
     "(GRADLE_LICENSE)$",
     "(Resource.designer.cs)$",
     "(gradlew|gradlew.bat)$",
+    r"\.patch$",
     r"\.svg$",
 ]
 multipleEmptyLinesSkipPatterns = [
@@ -20,6 +21,7 @@ multipleEmptyLinesSkipPatterns = [
     "src/ice/msi/docs/main/THIRD_PARTY_LICENSE.txt",
     "(Resource.designer.cs)$",
     "(gradlew|gradlew.bat)$",
+    r"\.patch$",
     r"\.svg$",
 ]
 
