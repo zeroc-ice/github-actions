@@ -13,6 +13,7 @@ trailingWhitespaceSkipPatterns = [
     "(gradlew|gradlew.bat)$",
     r"\.patch$",
     r"\.svg$",
+    "/fuzz/corpus/",
 ]
 multipleEmptyLinesSkipPatterns = [
     r"(Grammar|Scanner)\.(h|cpp|m)",
@@ -23,6 +24,7 @@ multipleEmptyLinesSkipPatterns = [
     "(gradlew|gradlew.bat)$",
     r"\.patch$",
     r"\.svg$",
+    "/fuzz/corpus/",
 ]
 
 # Matches a Markdown fenced code block delimiter: three or more backticks or tildes,
